@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AppVeyor.Deployment</id>
+    <version>1.0.0</version>
+    <title>AppVeyor Deployment Scripts</title>
+    <authors>Appveyor Systems Inc.</authors>
+    <owners>Appveyor Systems Inc.</owners>
+    <licenseUrl>https://github.com/AppVeyor/Deployment</licenseUrl>
+    <projectUrl>http://www.appveyor.com</projectUrl>
+    <iconUrl>http://download.appveyor.com/files/appveyor-logo-128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>PowerShell deployment scripts for use with AppVeyor Continuous Integration.</description>
+    <copyright>Copyright 2013</copyright>
+    <tags>Tools CI</tags>
+  </metadata>
+  <files>
+    <file src="scripts\*.*" target="tools" />    
+  </files>  
+</package>
