@@ -6,7 +6,7 @@ Param (
 )
 
 # get script variables
-$nugetApiKey = $parameters["NuGetApiKey"]
+$nugetApiKey = $parameters["NuGetApiKey-secure"]
 
 # update package version in nuspec file
 Write-Output "Updating version in nuspec file"
@@ -17,8 +17,8 @@ $xml.Save($nuspecPath)
 
 # build NuGet package
 Write-Output "Building NuGet package"
-& ".\NuGet.exe Pack AppVeyor.Deployment.nuspec"
+& "$srcFolder\NuGet.exe Pack AppVeyor.Deployment.nuspec"
 
 # publish NuGet package
 Write-Output "Publishing NuGet package"
-& ".\NuGet.exe push $srcFolder\AppVeyor.Deployment.nupkg $nugetApiKey"
+& "$srcFolder\NuGet.exe push $srcFolder\AppVeyor.Deployment.nupkg $nugetApiKey"
