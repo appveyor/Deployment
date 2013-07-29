@@ -17,8 +17,8 @@ $xml.Save($nuspecPath)
 
 # build NuGet package
 Write-Output "Building NuGet package"
-& "$srcFolder\NuGet.exe Pack AppVeyor.Deployment.nuspec"
+& ".\NuGet.exe Pack AppVeyor.Deployment.nuspec"
 
 # publish NuGet package
 Write-Output "Publishing NuGet package"
-& "$srcFolder\NuGet.exe push $srcFolder\AppVeyor.Deployment.nupkg $nugetApiKey"
+& ".\NuGet.exe push $srcFolder\AppVeyor.Deployment.nupkg $nugetApiKey"
