@@ -2,8 +2,11 @@
 Import-Module AppRolla
 Import-Module AppVeyor
 
-# configure environments
-Add-Environment Staging
+# scripts folder
+$scriptsPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
+
+# load environments and taks
+. (Join-Path $scriptsPath "environments.ps1")
 
 # load project details and configure AppRolla application
 # if script being run interactively

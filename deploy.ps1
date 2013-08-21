@@ -1,5 +1,5 @@
 Param (
-    $parameters = @{},	
+    $variables = @{},
     $artifacts = @{},
     $scriptFolder,
     $projectName,
@@ -10,4 +10,4 @@ Param (
 . (Join-Path $scriptFolder "config.ps1")
 
 # perform deployment
-New-Deployment $projectName $projectVersion -To Staging
+#New-Deployment $projectName $projectVersion -To Staging
