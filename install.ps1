@@ -11,5 +11,6 @@ New-Item "$modules\AppVeyor" -ItemType Directory -Force | Out-Null
 
 # download deployment script to the current directory
 $path = Resolve-Path .\
+$path
 (New-Object Net.WebClient).DownloadFile("https://raw.github.com/AppVeyor/Deployment/master/config.ps1", "$path\config.ps1")
 (New-Object Net.WebClient).DownloadFile("https://raw.github.com/AppVeyor/Deployment/master/deploy.ps1", "$path\deploy.ps1")
