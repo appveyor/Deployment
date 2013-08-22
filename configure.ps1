@@ -6,39 +6,12 @@ Import-Module AppVeyor
 $scriptsPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $settingsPath = "HKCU:SOFTWARE\AppVeyor\Deployment"
 
-$apiAccessKey = $null
-$apiSecretKey = $null
-$specificProject = $true
-$serverUsername = $null
-$serverPassword = $null
-
 try
 {
     # is it AppVeyor CI environment?
-    if($projectName)
+    if(-not $projectName)
     {
-        # yes, this is AppVeyor CI environment
-
-        # are we deploying specific project?
-        if(-not $variables -or $variables["Project"] -eq $null)
-        {
-            # no, note that
-            $specificProject = $false
-        }
-        else
-        {
-            # get script settings
-            $projectName = $variables["Project"]
-            $projectVersion = $variables["Version"]
-            $apiAccessKey = $variables["ApiAccessKey"]
-            $apiSecretKey = $variables["ApiSecretKey"]
-            $serverUsername = $variables["ServerUsername"]
-            $serverPassword = $variables["ServerPassword"]
-        }
-    }
-    else
-    {
-        # script is being run interactively from command line
+        # no, the script is being run interactively from command line
     
         # load script parameters from the Registry
         if(-not (Test-Path $settingsPath))
@@ -46,16 +19,21 @@ try
             throw "Cannot read script parameters from Registry key: $settingsPath"
         }
 
-        $scriptData = Get-ItemProperty -Path $settingsPath
-
-        # get script settings
-        $projectName = $scriptData.Project
-        $projectVersion = $scriptData.Version
-        $apiAccessKey = $scriptData.ApiAccessKey
-        $apiSecretKey = $scriptData.ApiSecretKey
-        $serverUsername = $scriptData.ServerUsername
-        $serverPassword = $scriptData.ServerPassword
+        $variables = Get-ItemProperty -Path $settingsPath
     }
+
+    # get script settings
+    $specificProject = $false
+    if($variables.Project)
+    {
+        $specificProject = $true
+        $projectName = $variables.Project
+        $projectVersion = $variables.Version
+    }
+    $apiAccessKey = $variables.ApiAccessKey
+    $apiSecretKey = $variables.ApiSecretKey
+    $serverUsername = $variables.ServerUsername
+    $serverPassword = $variables.ServerPassword
 
     if(-not $apiAccessKey -or -not $apiSecretKey)
     {
@@ -81,15 +59,15 @@ try
             # load specific project version
             $version = Get-AppveyorProjectVersion $projectName $projectVersion
 
-            # get project artifacts from the last version
+            # get project artifacts
             $projectArtifacts = $version.artifacts
         }
         else
         {
-            # load project details
+            # load last project version
             $project = Get-AppveyorProject -Name $projectName
 
-            # get project artifacts from the last version
+            # get project artifacts
             $projectArtifacts = $project.lastVersion.artifacts
         }
     }
