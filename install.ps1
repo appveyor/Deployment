@@ -27,5 +27,7 @@ if(-not (Test-Path $settingsPath))
     New-ItemProperty -Path $settingsPath -Name ApiAccessKey -Value "" | Out-Null
     New-ItemProperty -Path $settingsPath -Name ApiSecretKey -Value "" | Out-Null
     New-ItemProperty -Path $settingsPath -Name Project -Value "" | Out-Null
+    New-ItemProperty -Path $settingsPath -Name Version -Value "" | Out-Null
+    New-ItemProperty -Path $settingsPath -Name ServerUsername -Value "administrator" | Out-Null
     New-ItemProperty -Path $settingsPath -Name ServerPassword -Value "" | Out-Null
 }
