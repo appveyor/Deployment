@@ -113,8 +113,8 @@ try
         }
     }
 
-    # load environments and other customizations
-    . (Join-Path $scriptsPath "environments.ps1")
+    # load project specific settings and customizations
+    . (Join-Path $scriptsPath "project.ps1")
 
     # set environment credentials
     if($serverUsername -and $serverPassword)

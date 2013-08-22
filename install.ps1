@@ -11,12 +11,12 @@ New-Item "$modules\AppVeyor" -ItemType Directory -Force | Out-Null
 
 $path = Resolve-Path .\
 Write-Host "Downloading deployment scripts to the current directory: $path"
-(New-Object Net.WebClient).DownloadFile("https://raw.github.com/AppVeyor/Deployment/master/config.ps1", "$path\config.ps1")
+(New-Object Net.WebClient).DownloadFile("https://raw.github.com/AppVeyor/Deployment/master/configure.ps1", "$path\configure.ps1")
 (New-Object Net.WebClient).DownloadFile("https://raw.github.com/AppVeyor/Deployment/master/deploy.ps1", "$path\deploy.ps1")
 
-if(-not (Test-Path "$path\environments.ps1"))
+if(-not (Test-Path "$path\project.ps1"))
 {
-    (New-Object Net.WebClient).DownloadFile("https://raw.github.com/AppVeyor/Deployment/master/environments.ps1", "$path\environments.ps1")
+    (New-Object Net.WebClient).DownloadFile("https://raw.github.com/AppVeyor/Deployment/master/project.ps1", "$path\project.ps1")
 }
 
 # add registry settings
