@@ -10,4 +10,12 @@ Param (
 . (Join-Path $scriptFolder "configure.ps1")
 
 # perform deployment
-#New-Deployment $projectName $projectVersion -To Staging
+$environment = $variables.Environment
+if($environment)
+{
+    # does specified environment exist?
+    Get-Environment -Name $environment
+
+    # deploy
+    New-Deployment $projectName $projectVersion -To $environment
+}
