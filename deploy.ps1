@@ -16,22 +16,15 @@ if($environment)
     # does specified environment exist?
     Get-Environment -Name $environment
 
-    # deploy
+    # deploy AppRolla application
     New-Deployment $projectName $projectVersion -To $environment
-}
-
-$azureEnvironment = $variables.AzureEnvironment
-if($azureEnvironment)
-{
-    # does specified Azure environment exist?
-    Get-AzureEnvironment -Name $azureEnvironment
 
     # deploy first Azure application to the selected environment
     foreach($app in Get-Application)
     {
         if($app.Type -eq "Azure")
         {
-            New-Deployment $app.Name $projectVersion -To $azureEnvironment
+            New-Deployment $app.Name $projectVersion -To $environment
         }
     }
 }

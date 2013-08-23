@@ -11,7 +11,7 @@ $azureApps = @{}
 function GetAzureApp($name)
 {
     $app = $azureApps[$name]
-    if(-not $app)
+    if($app -eq $null)
     {
         $app = @{}
         $azureApps[$name] = $app
@@ -121,7 +121,8 @@ try
         elseif($artifact.type -eq "AzureCloudServiceConfig")
         {
             # Azure Cloud Service configuration
-            $app = GetAzureApp $artifact.name
+            $appName = $artifact.name.substring(0, $artifact.name.lastIndexOf("-"))
+            $app = GetAzureApp $appName
             $app.ConfigUrl = $artifact.customUrl
         }
     }
