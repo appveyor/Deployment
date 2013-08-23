@@ -125,7 +125,7 @@ else
     $projectArtifacts = $artifacts.values
 }
 
-Write-Host "Configuring application for project `"$projectName`" version `"$projectVersion`""
+Write-Host "Configuring application for project `"$projectName`" version $projectVersion"
 
 # build AppRolla application from artifacts
 foreach($artifact in $projectArtifacts)
