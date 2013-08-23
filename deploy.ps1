@@ -2,13 +2,14 @@ Param (
     $configurationName,
     $variables = @{},
     $artifacts = @{},
-    $scriptFolder,
     $projectName,
     $projectVersion
 )
 
+$scriptsPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
+
 # configure deployment
-. (Join-Path $scriptFolder "configure.ps1") $configurationName
+. (Join-Path $scriptsPath "configure.ps1") $configurationName
 
 # perform deployment
 $environment = $variables.Environment
