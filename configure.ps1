@@ -114,6 +114,7 @@ if($specificProject)
     {
         # load last project version
         $project = Get-AppveyorProject -Name $projectName
+        $projectVersion = $project.lastVersion.version
 
         # get project artifacts
         $projectArtifacts = $project.lastVersion.artifacts
@@ -123,6 +124,8 @@ else
 {
     $projectArtifacts = $artifacts.values
 }
+
+Write-Host "Configuring application for project `"$projectName`" version `"$projectVersion`""
 
 # build AppRolla application from artifacts
 foreach($artifact in $projectArtifacts)
