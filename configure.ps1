@@ -3,8 +3,21 @@ Import-Module AppRolla
 Import-Module AppVeyor
 
 # globals
+$isAppveyorEnvironment = $true
 $scriptsPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $settingsPath = "HKCU:SOFTWARE\AppVeyor\Deployment"
+$azureApps = @{}
+
+function GetAzureApp($name)
+{
+    $app = $azureApps[$name]
+    if(-not $app)
+    {
+        $app = @{}
+        $azureApps[$name] = $app
+    }
+    return $app
+}
 
 try
 {
@@ -12,6 +25,7 @@ try
     if(-not $projectName)
     {
         # no, the script is being run interactively from command line
+        $isAppveyorEnvironment = $false
     
         # load script parameters from the Registry
         if(-not (Test-Path $settingsPath))
@@ -47,10 +61,18 @@ try
     Set-DeploymentConfiguration AppveyorApiKey $apiAccessKey
     Set-DeploymentConfiguration AppveyorApiSecret $apiSecretKey
 
+    # details of Azure subscription (required by Azure deployment cmdlets)
+    Set-DeploymentConfiguration AzureSubscriptionID $variables.AzureSubscriptionID
+    Set-DeploymentConfiguration AzureSubscriptionCertificate $variables.AzureSubscriptionCertificate
+
+    # details of Azure cloud storage (required by Azure deployment cmdlets to download CS configuration file)
+    Set-DeploymentConfiguration AzureStorageAccountName $variables.AzureStorageAccountName
+    Set-DeploymentConfiguration AzureStorageAccountKey $variables.AzureStorageAccountKey
+
     # add new application
     New-Application $projectName
 
-    # add application roles from artifacts
+    # add applications and roles from artifacts
     $projectArtifacts = $null
     if($specificProject)
     {
@@ -89,6 +111,25 @@ try
             # Web application
             Add-WebsiteRole $projectName $artifact.name -PackageUrl $artifact.url -DeploymentGroup web
         }
+        elseif($artifact.type -eq "AzureCloudService")
+        {
+            # Azure Cloud Service package
+            $app = GetAzureApp $artifact.name
+            $app.Name = $artifact.name
+            $app.PackageUrl = $artifact.customUrl
+        }
+        elseif($artifact.type -eq "AzureCloudServiceConfig")
+        {
+            # Azure Cloud Service configuration
+            $app = GetAzureApp $artifact.name
+            $app.ConfigUrl = $artifact.customUrl
+        }
+    }
+
+    # add Azure applications if found
+    foreach($azureApp in $azureApps.Values)
+    {
+        New-AzureApplication -Name $azureApp.Name -PackageUrl $azureApp.PackageUrl -ConfigUrl $azureApp.ConfigUrl
     }
 
     # load project specific settings and customizations

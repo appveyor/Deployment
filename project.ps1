@@ -11,6 +11,9 @@ New-Environment Production
 # Add-EnvironmentServer Production "web.myserver.com" -DeploymentGroup web
 # Add-EnvironmentServer Production "app.myserver.com" -DeploymentGroup app
 
+# Azure environments
+# New-AzureEnvironment Staging -CloudService <cloud-service-name> -Slot <Staging|Production>
+
 <#
 
 # What else could be done in this script?
