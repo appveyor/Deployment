@@ -27,7 +27,7 @@ $azureEnvironment = $variables.AzureEnvironment
 if($azureEnvironment)
 {
     # does specified environment exist?
-    Get-AzureEnvironment -Name $azureEnvironment | Out-Null
+    Get-Environment -Name $azureEnvironment | Out-Null
 
     # deploy first Azure application to the selected environment
     foreach($app in Get-Application)

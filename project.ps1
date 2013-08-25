@@ -12,7 +12,7 @@ New-Environment Production
 # Add-EnvironmentServer Production "app.myserver.com" -DeploymentGroup app
 
 # Azure environments
-# New-AzureEnvironment Staging -CloudService <cloud-service-name> -Slot <Staging|Production>
+# New-AzureEnvironment Azure-Staging -CloudService <cloud-service-name> -Slot <Staging|Production>
 
 <#
 

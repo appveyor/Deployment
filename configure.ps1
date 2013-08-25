@@ -4,8 +4,8 @@ param
 )
 
 # unload modules if loaded
-Remove-Module AppVeyor -Force -ErrorAction SilentlyContinue
-Remove-Module AppRolla -Force -ErrorAction SilentlyContinue
+Get-Module AppVeyor | Remove-Module
+Get-Module AppRolla | Remove-Module
 
 # import modules
 Import-Module AppRolla
@@ -125,7 +125,7 @@ else
     $projectArtifacts = $artifacts.values
 }
 
-Write-Host "Configuring application for project `"$projectName`" version $projectVersion"
+Write-Host "Configuring applications for project `"$projectName`" version $projectVersion"
 
 # build AppRolla application from artifacts
 foreach($artifact in $projectArtifacts)
@@ -177,5 +177,25 @@ if($serverUsername -and $serverPassword)
         {
             Set-Environment $environment.Name -Credential $credential
         }
+    }
+}
+
+# output what apps and environments are available
+if(-not $env:AppVeyorCI)
+{
+    # apps
+    Write-Host
+    Write-Host "Applications:"
+    foreach($app in Get-Application)
+    {
+        Write-Host "    $($app.Name)"
+    }
+
+    # environments
+    Write-Host
+    Write-Host "Environments:"
+    foreach($environment in Get-Environment)
+    {
+        Write-Host "    $($environment.Name)"
     }
 }
