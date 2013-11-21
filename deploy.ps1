@@ -15,6 +15,8 @@ $scriptsPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $environment = $variables.Environment
 if($environment)
 {
+    Write-Host "Deploying to environment: $environment"
+
     # does specified environment exist?
     Get-Environment -Name $environment | Out-Null
 
@@ -26,6 +28,8 @@ if($environment)
 $azureEnvironment = $variables.AzureEnvironment
 if($azureEnvironment)
 {
+    Write-Host "Deploying to Azure CS environment: $azureEnvironment"
+
     # does specified environment exist?
     Get-Environment -Name $azureEnvironment | Out-Null
 

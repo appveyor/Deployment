@@ -31,6 +31,8 @@ function GetAzureApp($name)
 # is it AppVeyor CI environment?
 if(-not $projectName)
 {
+    Write-Host "Running deployment script interactively"
+
     # no, the script is being run interactively from command line
     $isAppveyorEnvironment = $false
     
@@ -104,6 +106,8 @@ if($specificProject)
 {
     if($projectVersion)
     {
+        Write-Host "Fetching version $projectVersion details for project $projectName using AppVeyor API"
+
         # load specific project version
         $version = Get-AppveyorProjectVersion $projectName $projectVersion
 
@@ -112,6 +116,8 @@ if($specificProject)
     }
     else
     {
+        Write-Host "Fetching last version of project $projectName using AppVeyor API"
+
         # load last project version
         $project = Get-AppveyorProject -Name $projectName
         $projectVersion = $project.lastVersion.version
@@ -122,12 +128,15 @@ if($specificProject)
 }
 else
 {
+    Write-Host "Deploying from build artifacts"
     $projectArtifacts = $artifacts.values
 }
 
 Write-Host "Configuring applications for project `"$projectName`" version $projectVersion"
 
 # build AppRolla application from artifacts
+Write-Host "Total project artifacts: $($projectArtifacts.Count)"
+
 foreach($artifact in $projectArtifacts)
 {
     if($artifact.type -eq "WindowsApplication")
@@ -154,6 +163,10 @@ foreach($artifact in $projectArtifacts)
         $app = GetAzureApp $appName
         $app.ConfigUrl = $artifact.customUrl
     }
+    else
+    {
+        Write-Host "$($artifact.type) artifact $($artifact.name) skipped"
+    }
 }
 
 # add Azure applications if found
@@ -163,11 +176,13 @@ foreach($azureApp in $azureApps.Values)
 }
 
 # load project specific settings and customizations
+Write-Host "Loading project custom settings"
 . (Join-Path $scriptsPath "project.ps1")
 
 # set environment credentials
 if($serverUsername -and $serverPassword)
 {
+    Write-Host "Setting environment credentials"
     $securePassword = ConvertTo-SecureString $serverPassword -AsPlainText -Force
     $credential = New-Object System.Management.Automation.PSCredential $serverUsername, $securePassword
 
@@ -181,21 +196,18 @@ if($serverUsername -and $serverPassword)
 }
 
 # output what apps and environments are available
-if(-not $env:AppVeyorCI)
+# apps
+Write-Host
+Write-Host "Configured applications:"
+foreach($app in Get-Application)
 {
-    # apps
-    Write-Host
-    Write-Host "Applications:"
-    foreach($app in Get-Application)
-    {
-        Write-Host "    $($app.Name)"
-    }
+    Write-Host "    $($app.Name)"
+}
 
-    # environments
-    Write-Host
-    Write-Host "Environments:"
-    foreach($environment in Get-Environment)
-    {
-        Write-Host "    $($environment.Name)"
-    }
+# environments
+Write-Host
+Write-Host "Configured environments:"
+foreach($environment in Get-Environment)
+{
+    Write-Host "    $($environment.Name)"
 }
